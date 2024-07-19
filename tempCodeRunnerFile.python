@@ -1,0 +1,25 @@
+import requests
+from bs4 import BeautifulSoup
+
+# Base URL for pagination
+base_url = 'https://webscraper.io/test-sites/e-commerce/allinone?page='
+
+# Number of pages to scrape
+num_pages = 5
+
+# Function to scrape data from a page
+def scrape_page(page_number):
+    url = base_url + str(page_number)
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    products = soup.select('.thumbnail')
+    for product in products:
+        name = product.select_one('.caption h4').text.strip()
+        price = product.select_one('.caption .price').text.strip()
+        print(f'Name: {name}, Price: {price}')
+
+# Scrape data from specified number of pages
+for page in range(1, num_pages + 1):
+    print(f'Scraping page {page}...')
+    scrape_page(page)
